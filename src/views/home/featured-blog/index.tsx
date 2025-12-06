@@ -8,7 +8,7 @@ function FeaturedBlog() {
       <h2 className="text-5xl font-semibold">
         Öne Çıkan İçerik
       </h2>
-      <h4 className="max-w-3xl text-lg text-neutral-500">Sizin için seçilmiş en dikkat çekici, ilham veren ve en çok konuşulan içeriklerden derlenen okurların ilgisini en çok çeken, sadelik, kalite ve ilham veren fikirlerle dolu seçilmiş bir içerik.</h4>
+      <h4 className="max-w-3xl text-lg text-neutral-500 text-center">Sizin için seçilmiş en dikkat çekici, ilham veren ve en çok konuşulan içeriklerden derlenen okurların ilgisini en çok çeken, sadelik, kalite ve ilham veren fikirlerle dolu seçilmiş bir içerik.</h4>
       <Button className="cursor-pointer">Keşfet</Button>
     </section>
   )

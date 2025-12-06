@@ -8,14 +8,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-function BlogCard({ title, description, badge, imageUrl, url }: {
-  title: string, description: string, badge: string, imageUrl: string, url: string
+function BlogCard({ title, description, badge, imageUrl, url, horizontal = false }: {
+  title: string, description: string, badge: string, imageUrl: string, url: string, horizontal?: boolean
 }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Link href={url}>
-          <Card className='min-h-64 relative bg-cover p-0 bg-center overflow-hidden border-neutral-200 dark:border-neutral-700' style={{ backgroundImage: `url(${imageUrl})` }}>
+          <Card className={`${horizontal ? 'min-h-auto' : 'min-h-64'} relative bg-cover p-0 bg-center overflow-hidden border-neutral-200 dark:border-neutral-700`} style={{ backgroundImage: `url(${imageUrl})` }}>
             <CardFooter className="flex flex-1 flex-col items-start justify-end gap-2 p-4 text-white
         bg-linear-to-t from-black/60 via-black/30 to-transparent">
               <Badge variant={'secondary'}>{badge}</Badge>
