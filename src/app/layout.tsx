@@ -17,11 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr">
       <body
-        className={`${kumbh.variable} min-h-screen grid grid-rows-[auto_1fr_auto] bg-background text-foreground font-sans`}
+        className={`${kumbh.variable} min-h-screen grid grid-rows-[auto_1fr_auto] bg-card text-card-foreground font-sans`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Navbar />
-          <main className="container mx-auto grid grid-cols-12 gap-6 py-6">
+          <main className="container bg-card text-card-foreground mx-auto grid grid-cols-12 auto-rows-min gap-6 py-6">
             {children}
           </main>
           <Footer />
