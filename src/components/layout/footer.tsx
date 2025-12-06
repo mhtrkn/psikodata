@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { FacebookIcon, LucideLinkedin, LucideTwitter, PhoneCallIcon } from "lucide-react"
+import { ROUTES } from "@/routes"
 
 const companyLinks = [
-  { title: "Hakkımızda", href: "#" },
+  { title: "Hakkımızda", href: ROUTES.ABOUT },
   { title: "KVKK", href: "#" },
   { title: "Gizlilik Politikası", href: "#" },
   { title: "Kullanım Şartları", href: "#" },
@@ -14,9 +15,9 @@ const companyLinks = [
 
 const helpLinks = [
   { title: "Sıkça Sorulan Sorular", href: "#" },
-  { title: "Destek", href: "#" },
+  { title: "Destek", href: ROUTES.CONTACT },
   { title: "Kullanım Kılavuzu", href: "#" },
-  { title: "Geri Bildirim Gönder", href: "#" },
+  { title: "Geri Bildirim Gönder", href: ROUTES.CONTACT },
 ];
 
 const socialLinks = [
@@ -28,10 +29,10 @@ const socialLinks = [
 
 function Footer() {
   return (
-    <footer className="w-full border-t bg-card text-card-foreground border-t-neutral-200 dark:border-t-neutral-700 mt-10">
-      <div className="container grid grid-cols-1 xl:grid-cols-12 gap-12 mx-auto py-6 pb-10 border-b border-b-neutral-200 dark:border-b-neutral-700 px-4 xl:px-0">
+    <footer className="w-full border-t bg-card text-card-foreground border-t-neutral-100 dark:border-t-neutral-800 mt-10">
+      <div className="container grid grid-cols-1 xl:grid-cols-12 gap-12 mx-auto py-6 pb-10 border-b border-b-neutral-100 dark:border-b-neutral-800 px-4 xl:px-0">
         <div className="col-span-4">
-          <Link href="/" className="block mb-2 text-4xl font-bold text-primary">psikodata.</Link>
+          <Link href={ROUTES.HOME} className="block mb-2 text-4xl font-bold text-primary">psikodata.</Link>
           <span className="text-sm font-light">
             Psikoloji dünyasından güncel içerikleri, araştırmaları ve pratik önerileri paylaşan bir blog platformudur.
           </span>
@@ -63,7 +64,7 @@ function Footer() {
         <div className="col-span-3 text-right flex flex-col gap-2">
           <Label className="text-lg text-neutral-800 mb-2 dark:text-neutral-300 space-y-2" htmlFor="email">İletişim</Label>
           <div className="flex w-full max-w-sm items-center gap-2">
-            <Input type="email" id="email" placeholder="rabiabetulsahin@gmail.com" />
+            <Input type="email" id="email" placeholder="rabiabetulsahin@gmail.com" className="text-[13px] xl:text-base" />
             <Button className="cursor-pointer" type="submit">
               Abone Ol
             </Button>
@@ -79,7 +80,7 @@ function Footer() {
           </ToggleGroup>
         </div>
       </div>
-      <div className="col-span-full text-center py-4">
+      <div className="col-span-full text-center py-4 text-neutral-800 dark:text-neutral-300">
         © {new Date().getFullYear()} psikodata. Tüm hakları saklıdır.
       </div>
     </footer>

@@ -44,6 +44,7 @@
 }
 
 :root {
+  --font-sans: 'Kumbh Sans', sans-serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -110,4 +111,23 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.drop-cap p:first-of-type::first-letter {
+  float: left;
+  font-size: 59px;
+  font-weight: bold;
+  line-height: 1;
+  margin-right: 0.1em;
+  margin-top: 1px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -23,6 +23,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { DialogContent } from "@radix-ui/react-dialog";
+import { ROUTES } from "@/routes";
 
 const recentSearches = [
   "Depresyon belirtileri",
@@ -63,21 +64,21 @@ function Search() {
           <CommandEmpty>
             <Empty>
               <EmptyHeader>
-                <EmptyTitle>404 - Not Found</EmptyTitle>
+                <EmptyTitle>İçerik Bulunamadı</EmptyTitle>
                 <EmptyDescription>
                   Aradığınız sayfa bulunamadı. Aşağıdan arama yapabilirsiniz.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <EmptyDescription>
-                  Yardım için <a href="#">buraya tıklayın</a>.
+                  Yardım için <a href={ROUTES.CONTACT}>buraya tıklayın</a>.
                 </EmptyDescription>
               </EmptyContent>
             </Empty>
           </CommandEmpty>
 
-          <CommandGroup heading="Geçmiş Aramalar">
-            <CommandSeparator />
+          <CommandGroup heading="Geçmiş Aramalar" className="mt-1">
+            <CommandSeparator className="mb-2" />
             {recentSearches.map((item, index) => (
               <CommandItem className="text-sm text-neutral-700 dark:text-neutral-300" key={index}>{item}</CommandItem>
             ))}
@@ -85,7 +86,7 @@ function Search() {
 
 
           <CommandGroup heading="Popüler Aramalar">
-            <CommandSeparator />
+            <CommandSeparator className="mb-2" />
             {popularSearches.map((item, index) => (
               <CommandItem className="text-sm text-neutral-700 dark:text-neutral-300" key={index}>{item}</CommandItem>
             ))}
