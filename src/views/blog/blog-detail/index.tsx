@@ -4,7 +4,7 @@ import CustomBreadcrumb from '@/components/theme/breadcrumb';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item';
-import { formatDate, formatTime } from '@/helpers/utils';
+import { formatDate, formatTime } from '@/lib/utils';
 
 const blogDetailMock = {
   id: 1,

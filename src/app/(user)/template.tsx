@@ -2,10 +2,10 @@
 
 import { ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import "./globals.css";
+import "../globals.css";
 import { usePathname } from "next/navigation";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function GlobalPageRoute({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
