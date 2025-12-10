@@ -3,8 +3,10 @@
 import CustomBreadcrumb from '@/components/theme/breadcrumb';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { formatDate, formatTime } from '@/lib/utils';
+import { FacebookIcon, TwitterIcon } from 'lucide-react';
 
 const blogDetailMock = {
   id: 1,
@@ -71,7 +73,17 @@ const blogDetailMock = {
 function BlogDetailView() {
   return (
     <div className='grid grid-cols-12 w-full place-items-center mt-5 gap-0 lg:gap-4'>
-      <div className='hidden lg:block col-span-2 border-r border-r-neutral-200' />
+      <div className='hidden lg:flex h-full w-full col-span-2 items-center justify-center'>
+        <div className='flex flex-col items-center justify-center gap-2'>
+          <span className='text-xs font-medium text-card-foreground'>PAYLAŞ</span>
+          <Button size={'icon-lg'} variant={'outline'} className='rounded-full'>
+            <FacebookIcon />
+          </Button>
+          <Button size={'icon-lg'} variant={'outline'} className='rounded-full'>
+            <TwitterIcon />
+          </Button>
+        </div>
+      </div>
       <div className="col-span-12 lg:col-span-8 mx-auto flex flex-col gap-6 lg:gap-10">
         <div className='block lg:hidden mt-6'>
           <CustomBreadcrumb />

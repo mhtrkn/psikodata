@@ -6,7 +6,7 @@ function AdminProviders({ children }: { children: React.ReactNode }) {
   return (
     <React.Fragment>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <main className="w-full bg-card text-card-foreground mx-auto grid grid-cols-12 max-h-screen auto-rows-min gap-6 overflow-hidden">
+        <main className="relative w-full bg-card text-card-foreground">
           {children}
         </main>
         <Toaster richColors position="top-right" />

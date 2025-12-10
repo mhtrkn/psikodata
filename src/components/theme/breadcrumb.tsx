@@ -10,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import React from "react";
 
 export default function CustomBreadcrumb() {
   const pathname = usePathname();
@@ -23,24 +24,29 @@ export default function CustomBreadcrumb() {
   })];
 
   return (
-    <Breadcrumb className="col-span-full place-items-center -mt-6">
+    <Breadcrumb>
       <BreadcrumbList>
         {breadcrumbs.map((crumb, index) => {
           const isLast = index === breadcrumbs.length - 1;
+
           return (
-            <BreadcrumbItem key={crumb.href}>
-              {isLast ? (
-                <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink asChild>
-                  <Link href={crumb.href}>{crumb.name}</Link>
-                </BreadcrumbLink>
-              )}
+            <React.Fragment key={crumb.href}>
+              <BreadcrumbItem>
+                {isLast ? (
+                  <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link href={crumb.href}>{crumb.name}</Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+
               {!isLast && <BreadcrumbSeparator />}
-            </BreadcrumbItem>
+            </React.Fragment>
           );
         })}
       </BreadcrumbList>
     </Breadcrumb>
+
   );
 }

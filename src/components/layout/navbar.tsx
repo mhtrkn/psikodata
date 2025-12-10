@@ -33,8 +33,8 @@ function Navbar() {
 
         <div className="block md:hidden">
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger>
-              <Button onClick={() => setOpen(true)} variant={'ghost'}>
+            <SheetTrigger asChild>
+              <Button variant={'ghost'}>
                 <MenuIcon />
               </Button>
             </SheetTrigger>
