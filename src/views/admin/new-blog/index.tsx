@@ -1,45 +1,21 @@
-// import { TextareaDemo } from "@/components/theme/text-area"
-// import { Input } from "@/components/ui/input"
-// import { Label } from "@/components/ui/label"
-
-// function NewBlog() {
-//   return (
-//     <div className='flex flex-col gap-10'>
-//       <h2 className='text-2xl font-medium text-card-foreground'>
-//         Yeni Blog
-//       </h2>
-
-//       <form className='grid grid-cols-2 gap-4 place-items-start'>
-//         <div className="flex col-span-1 w-full flex-col gap-3">
-//           <Label htmlFor="blog-name">Blog Başlığı</Label>
-//           <Input type="text" id="blog-name" placeholder="Örn: Blog Başlığı" className="py-2.5! h-fit!" />
-//         </div>
-//         <div className="flex col-span-1 w-full flex-col gap-3">
-//           <Label htmlFor="blog-name">Blog Özeti</Label>
-//           <TextareaDemo id="blog-name" placeholder="Özeti buraya yazın." />
-//         </div>
-//       </form>
-//     </div>
-//   )
-// }
-
-// export default NewBlog
-
 "use client";
 
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
+import { TextareaDemo } from "@/components/theme/text-area";
 import { Input } from "@/components/ui/input";
-import TiptapEditor from "@/components/admin/editor/TiptapEditor";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
+import { Switch } from "@/components/ui/switch";
+import { TagInput } from "@/components/ui/tag-input";
+import { Button } from "@/components/ui/button";
 
 function NewBlog() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [category, setCategory] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [isPublished, setIsPublished] = useState(false);
 
   return (
@@ -73,7 +49,7 @@ function NewBlog() {
         {/* Excerpt */}
         <div className="flex w-full flex-col gap-3 col-span-2">
           <Label>Kısa Açıklama / Özet</Label>
-          <Input
+          <TextareaDemo
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
             placeholder="Blog için kısa bir açıklama yazın"
@@ -83,7 +59,7 @@ function NewBlog() {
         {/* Content (Rich Text) */}
         <div className="flex w-full flex-col gap-3 col-span-2">
           <Label>İçerik</Label>
-          <TiptapEditor value={content} onChange={setContent} />
+          <SimpleEditor />
         </div>
 
         {/* Thumbnail */}
@@ -107,23 +83,29 @@ function NewBlog() {
         </div>
 
         {/* Tags */}
-        <div className="flex w-full flex-col gap-3 col-span-2">
-          <Label>Etiketler (virgülle ayır)</Label>
-          <Input
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="nextjs,react,frontend"
-          />
+        <div className="flex w-full flex-col gap-3 col-span-2 relative">
+          <Label className="flex items-center justify-between gap-10">Konu Başlıkları (Topics)
+            <div className="flex w-fit items-center self-end text-xs text-muted-foreground -mb-1 mr-1 font-light leading-none">
+              Konu başlığı eklemek için &quot;Enter&apos;a&quot; basın.
+            </div>
+          </Label>
+          <TagInput value={tags} onChange={setTags} placeholder="Örn: Psikoloji, Stres Yönetimi, Sağlık & Beslenme" />
+
         </div>
 
         {/* Publish */}
         <div className="flex items-center gap-2 col-span-2">
-          <input
-            type="checkbox"
-            checked={isPublished}
-            onChange={() => setIsPublished(!isPublished)}
-          />
-          <Label>Yayınla</Label>
+          <Switch id="published" checked={isPublished} onCheckedChange={() => setIsPublished(!isPublished)} />
+          <Label htmlFor="published">Hemen yayınlansın mı?</Label>
+        </div>
+
+        <div className="flex items-center gap-4 w-fit ml-auto col-span-2">
+          <Button variant={"secondary"}>
+            Vazgeç
+          </Button>
+          <Button>
+            Paylaş
+          </Button>
         </div>
 
       </form>

@@ -64,7 +64,7 @@ export function AdminSidebar() {
                           asChild
                           className={clsx(
                             "transition-colors px-4 py-2.5 h-fit",
-                            isActive && "bg-primary text-neutral-950"
+                            isActive && "bg-primary text-primary-foreground"
                           )}
                         >
                           <Link href={`${ROUTES.ADMIN.DASHBOARD}?activeTab=${process.id}`} className="flex items-center gap-2.5">

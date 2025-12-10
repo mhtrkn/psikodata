@@ -18,7 +18,7 @@ export default function AdminDashboardPage() {
     COMPONENT_MAP[activeTab] || COMPONENT_MAP["blog-list"];
 
   return (
-    <div className="flex-1 h-full bg-card rounded-2xl p-6">
+    <div className="flex-1 bg-card rounded-2xl p-6">
       {SelectedComponent}
     </div>
   );

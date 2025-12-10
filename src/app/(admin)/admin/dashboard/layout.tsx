@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <AdminSidebar />
         <main className="relative w-full">
           <AdminNavbar />
-          <div className="flex-1 p-8 h-full bg-neutral-100 dark:bg-neutral-950/40">
+          <div className="flex-1 p-8 bg-neutral-100 dark:bg-neutral-950/40">
             {children}
           </div>
         </main>
