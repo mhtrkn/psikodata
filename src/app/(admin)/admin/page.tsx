@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className='col-span-12 flex flex-row'>
+    <div className='col-span-12 flex flex-row place-items-center'>
       <div className='w-full h-full flex py-10 items-center justify-center'>
 
         <form onSubmit={handleLogin} className='flex flex-col md:max-w-[404px] w-full items-start gap-[25px]'>

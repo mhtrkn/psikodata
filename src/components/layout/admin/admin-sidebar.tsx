@@ -10,8 +10,13 @@ export const blogProcess = [
   },
   {
     id: "new-blog",
-    name: "Yeni Blog",
+    name: "Yeni Blog Ekle",
     icon: SquarePen,
+  },
+  {
+    id: "new-authors",
+    name: "Yazar Ekle",
+    icon: UserPlusIcon,
   },
 ];
 
@@ -31,9 +36,9 @@ import {
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/routes";
 import clsx from "clsx";
-import { ChevronDown, SquarePen, TextAlignStartIcon } from "lucide-react";
-import Link from "next/link";
+import { ChevronDown, SquarePen, TextAlignStartIcon, UserPlusIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();

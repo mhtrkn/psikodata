@@ -39,3 +39,21 @@ export function formatDate(isoDate: string) {
 
   return `${gun} ${ay} ${yil}`;
 }
+
+export function slugify(value: string) {
+  return value
+    .normalize("NFD")               // Türkçe karakterler ayrıştırılır
+    .replace(/[\u0300-\u036f]/g, "") // aksanlar temizlenir
+    .replace(/ı/g, "i")
+    .replace(/ş/g, "s")
+    .replace(/ç/g, "c")
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ö/g, "o")
+    .replace(/[^a-zA-Z0-9\s-]/g, "") // harf dışı karakterler temizlenir
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")            // boşlukları - yap
+    .replace(/-+/g, "-")             // tekrar eden - temizle
+    .slice(0, 100);
+}

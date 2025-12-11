@@ -174,7 +174,7 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ value, onChange }) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -184,6 +184,11 @@ export function SimpleEditor() {
 
   const editor = useEditor({
     immediatelyRender: false,
+    content: value || "",
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      onChange?.(html);
+    },
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -227,13 +232,19 @@ export function SimpleEditor() {
   })
 
   useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value || "");
+    }
+  }, [value, editor]);
+
+  useEffect(() => {
     if (!isMobile && mobileView !== "main") {
       setMobileView("main")
     }
   }, [isMobile, mobileView])
 
   return (
-    <div className="simple-editor-wrapper border rounded-2xl border-neutral-200 dark:border-neutral-700">
+    <div className="simple-editor-wrapper border rounded-2xl border-neutral-200 dark:border-neutral-700 min-h-[402px]">
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
