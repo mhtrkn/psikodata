@@ -1,11 +1,11 @@
-
-
 import CustomBreadcrumb from '@/components/theme/breadcrumb';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { formatDate, formatTime } from '@/lib/utils';
+import { AuthorType } from '@/types/authors';
+import { Blog } from '@/types/blogs';
 import { FacebookIcon, TwitterIcon } from 'lucide-react';
 
 const blogDetailMock = {
@@ -70,7 +70,12 @@ const blogDetailMock = {
   ]
 };
 
-function BlogDetailView() {
+function BlogDetailView({ blog, author }: {
+  blog: Blog | null,
+  author: AuthorType | null
+}) {
+  if (!blog) return <></>;
+
   return (
     <div className='grid grid-cols-12 w-full place-items-center mt-5 gap-0 lg:gap-4'>
       <div className='hidden lg:flex h-full w-full col-span-2 items-center justify-center'>
@@ -89,23 +94,23 @@ function BlogDetailView() {
           <CustomBreadcrumb />
         </div>
         <div className='text-center text-sm lg:text-base text-muted-foreground'>
-          {formatDate(blogDetailMock?.date)}, {formatTime(blogDetailMock?.date)}
+          {formatDate(blog?.created_at)}, {formatTime(blog?.created_at)}
         </div>
 
         <div className='flex flex-col justify-center gap-2 text-center'>
-          <h1 className="text-3xl lg:text-6xl font-bold">{blogDetailMock.title}</h1>
-          <h2 className="text-base lg:text-xl text-muted-foreground mt-2">{blogDetailMock.subtitle}</h2>
+          <h1 className="text-3xl lg:text-6xl font-bold">{blog?.title}</h1>
+          {/* <h2 className="text-base lg:text-xl text-muted-foreground mt-2">{blog?.subtitle}</h2> */}
         </div>
 
         <Item className='self-center -mt-4'>
           <ItemMedia>
             <Avatar>
-              <AvatarImage src={"https://github.com/evilrabbit.png"} className="grayscale" />
+              <AvatarImage src={author?.avatar_url || "https://github.com/evilrabbit.png"} className="grayscale" />
             </Avatar>
           </ItemMedia>
           <ItemContent className="gap-1">
-            <ItemTitle>{blogDetailMock?.author?.name}</ItemTitle>
-            <ItemDescription>{blogDetailMock?.author?.role}</ItemDescription>
+            <ItemTitle>{author?.name}</ItemTitle>
+            <ItemDescription>{author?.role}</ItemDescription>
           </ItemContent>
         </Item>
 
@@ -114,8 +119,8 @@ function BlogDetailView() {
         </div>
 
         <div
-          className="prose text-sm lg:text-base max-w-full lg:mt-4 drop-cap leading-[30px] dark:text-neutral-200 text-neutral-800"
-          dangerouslySetInnerHTML={{ __html: blogDetailMock.description }}
+          className="medium-article"
+          dangerouslySetInnerHTML={{ __html: blog.content }}
         />
 
         <div className="flex items-center justify-center self-center gap-4 my-10">
@@ -125,7 +130,7 @@ function BlogDetailView() {
         </div>
 
         <div className='flex items-center gap-2'>
-          {blogDetailMock.tags.map((tag, id) => (
+          {blog?.tags && blog?.tags?.map((tag, id) => (
             <Badge key={id} className='rounded px-2.5 py-1.5 text-muted-foreground' variant={'secondary'}>{tag}</Badge>
           ))}
         </div>

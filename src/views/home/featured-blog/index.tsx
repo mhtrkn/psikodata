@@ -2,12 +2,13 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Blog } from "@/types/blogs";
 import { useRouter } from "next/navigation"
 
 function FeaturedBlog({
-  badge, title, subtitle, hasBadge = false, hasButton = false, url = "", buttonTitle = 'Keşfet'
+  badge, data, title, subtitle, hasBadge = false, hasButton = false, url = "", buttonTitle = 'Keşfet'
 }: {
-  badge: string, title: string, subtitle: string, hasBadge?: boolean, hasButton?: boolean, url?: string, buttonTitle?: string
+  data: Blog | undefined, badge: string, title: string, subtitle: string, hasBadge?: boolean, hasButton?: boolean, url?: string, buttonTitle?: string
 }) {
   const router = useRouter();
 
@@ -16,6 +17,8 @@ function FeaturedBlog({
       router.push(url)
     }
   }
+
+  console.log('datdat: ', data);
 
   return (
     <section className="col-span-12 flex w-full h-fit mt-10 mb-12 flex-col items-center justify-center gap-4 ">

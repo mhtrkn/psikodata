@@ -42,18 +42,72 @@ export function formatDate(isoDate: string) {
 
 export function slugify(value: string) {
   return value
-    .normalize("NFD")               // Türkçe karakterler ayrıştırılır
-    .replace(/[\u0300-\u036f]/g, "") // aksanlar temizlenir
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/ı/g, "i")
     .replace(/ş/g, "s")
     .replace(/ç/g, "c")
     .replace(/ğ/g, "g")
     .replace(/ü/g, "u")
     .replace(/ö/g, "o")
-    .replace(/[^a-zA-Z0-9\s-]/g, "") // harf dışı karakterler temizlenir
+    .replace(/[^a-zA-Z0-9\s-]/g, "")
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, "-")            // boşlukları - yap
-    .replace(/-+/g, "-")             // tekrar eden - temizle
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .slice(0, 100);
+}
+
+export async function serverFetcher<T>(
+  url: string,
+  options?: RequestInit
+): Promise<T> {
+
+  try {
+    const res = await fetch(url, {
+      ...options,
+      method: options?.method || 'GET',
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+
+      throw new Error(`HTTP Hata ${res.status} (${res.statusText}). Detay: ${errorText}`);
+    }
+
+    const data: T = await res.json();
+    return data;
+
+  } catch (error) {
+    console.error(`[Fetcher Hata] ${url} adresinde hata oluştu:`, error);
+    throw error;
+  }
+}
+
+export async function clientFetcher<T>(
+  url: string,
+  options?: RequestInit
+): Promise<T> {
+
+  try {
+    const res = await fetch(url, {
+      ...options,
+      method: options?.method || 'GET',
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ message: 'Bilinmeyen Hata' }));
+
+      const errorMessage = `HTTP Hata ${res.status} (${res.statusText}). Detay: ${errorData.error || errorData.message || res.statusText}`;
+
+      throw new Error(errorMessage);
+    }
+
+    const data: T = await res.json();
+    return data;
+
+  } catch (error) {
+    console.error(`[Client Fetcher Hata] ${url} adresinde hata oluştu:`, error);
+    throw error;
+  }
 }

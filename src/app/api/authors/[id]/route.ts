@@ -4,27 +4,27 @@ import { createServerClient } from "@/lib/supabase/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { slug } = await params;
+  const { id } = await params;
 
   try {
     const supabase = createServerClient();
 
     const { data, error } = await supabase
-      .from("blogs")
+      .from("authors")
       .select("*")
-      .eq("slug", slug)
+      .eq("id", id)
       .single();
 
     if (error || !data) {
       return NextResponse.json(
-        { error: "Blog bulunamadı." },
+        { error: "Author bilgisi bulunamadı." },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ blog: data });
+    return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(
       { error: "Server error." },
@@ -35,9 +35,9 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { slug } = await params;
+  const { id } = await params;
 
   try {
     const body = await req.json();
@@ -45,9 +45,9 @@ export async function PUT(
     const supabase = createServerClient();
 
     const { data, error } = await supabase
-      .from("blogs")
+      .from("authors")
       .update(body)
-      .eq("slug", slug)
+      .eq("id", id)
       .select()
       .single();
 
@@ -58,7 +58,7 @@ export async function PUT(
       );
     }
 
-    return NextResponse.json({ success: true, blog: data });
+    return NextResponse.json({ success: true, data });
   } catch (err) {
     return NextResponse.json(
       { error: "Server error." },
@@ -69,17 +69,17 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { slug } = await params;
+  const { id } = await params;
 
   try {
     const supabase = createServerClient();
 
     const { error } = await supabase
-      .from("blogs")
+      .from("authors")
       .delete()
-      .eq("slug", slug);
+      .eq("id", id);
 
     if (error) {
       return NextResponse.json(

@@ -14,8 +14,9 @@ export async function POST(req: Request) {
       thumbnail,
       category,
       tags,
-      isPublished,
+      is_published,
       author_id,
+      is_featured
     } = body;
 
 
@@ -37,8 +38,9 @@ export async function POST(req: Request) {
         thumbnail,
         category,
         tags,
-        is_published: isPublished,
-        author_id
+        is_published,
+        author_id,
+        is_featured
       },
     ]);
 

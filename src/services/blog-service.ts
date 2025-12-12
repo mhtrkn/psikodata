@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { BASE_URL } from "@/lib/api";
+import { serverFetcher } from "@/lib/utils";
 import { toast } from "sonner";
+import { BlogListResponse, Blog, BlogResponse } from "@/types/blogs";
+import { AuthorType } from "@/types/authors";
 
 export interface BlogPayload {
   title: string;
@@ -56,14 +60,14 @@ export const blogService = {
 
       if (res.ok) return data.blogs;
 
-      toast.error("Bloglar alınamadı!", {
-        description: data?.error || "Sunucu kaynaklı bir hata oluştu.",
-      });
+      // toast.error("Bloglar alınamadı!", {
+      //   description: data?.error || "Sunucu kaynaklı bir hata oluştu.",
+      // });
       return [];
     } catch (err) {
-      toast.error("Sunucu hatası!", {
-        description: "Blog listesi alınırken hata oluştu.",
-      });
+      // toast.error("Sunucu hatası!", {
+      //   description: "Blog listesi alınırken hata oluştu.",
+      // });
       return [];
     }
   },
@@ -149,6 +153,7 @@ export const blogService = {
       return false;
     }
   },
+
   uploadThumbnail: async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append("file", file);
@@ -165,5 +170,50 @@ export const blogService = {
     }
 
     return null;
+  },
+
+  server: {
+    getAll: async (): Promise<Blog[]> => {
+      const apiUrl = `${BASE_URL}/api/blog/list`;
+
+      try {
+        const result = await serverFetcher<BlogListResponse>(apiUrl, {
+          cache: 'no-store'
+        });
+
+        return result.blogs;
+
+      } catch (err) {
+        return [];
+      }
+    },
+    getBySlug: async (slug: string) => {
+      const apiUrl = `${BASE_URL}/api/blog/${slug}`;
+
+      try {
+        const result = await serverFetcher<BlogResponse>(apiUrl, {
+          cache: 'no-store'
+        });
+
+        return result?.blog;
+
+      } catch (err) {
+        return null;
+      }
+    },
+    getAuthorById: async (id: string) => {
+      const apiURL = `${BASE_URL}/api/authors/${id}`;
+
+      try {
+        const result = await serverFetcher<AuthorType>(apiURL, {
+          cache: 'no-store'
+        });
+
+        return result;
+
+      } catch (err) {
+        return null;
+      }
+    }
   },
 };

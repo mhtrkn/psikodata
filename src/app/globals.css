@@ -143,3 +143,108 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .medium-article {
+    @apply max-w-full text-neutral-800 dark:text-neutral-200 leading-8 text-[15.5px] lg:text-[17px] tracking-[0.2px] mx-auto;
+  }
+
+  /* PARAGRAPHS */
+  .medium-article p {
+    @apply mb-6;
+  }
+
+  /* HEADINGS */
+  .medium-article h1 {
+    @apply text-3xl lg:text-4xl font-bold mt-10 mb-6 leading-tight;
+  }
+
+  .medium-article h2 {
+    @apply text-2xl lg:text-3xl font-semibold mt-10 mb-5 leading-tight;
+  }
+
+  .medium-article h3 {
+    @apply text-xl lg:text-2xl font-semibold mt-8 mb-4;
+  }
+
+  /* QUOTES (Medium Style) */
+  .medium-article blockquote {
+    @apply border-l-[3px] border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6;
+  }
+
+  /* IMAGES */
+  .medium-article img {
+    @apply rounded-lg my-8 w-full;
+  }
+
+  /* LISTS */
+  .medium-article ul {
+    @apply list-disc pl-6 mb-6;
+  }
+
+  .medium-article ol {
+    @apply list-decimal pl-6 mb-6;
+  }
+
+  .medium-article li {
+    @apply my-2;
+  }
+
+  /* LINKS */
+  .medium-article a {
+    @apply text-blue-600 dark:text-blue-400 underline underline-offset-2;
+  }
+
+  /* HORIZONTAL LINE */
+  .medium-article hr {
+    @apply my-10 border-neutral-300 dark:border-neutral-700;
+  }
+
+  /* CODE BLOCKS */
+  .medium-article pre {
+    @apply bg-neutral-900 text-neutral-100 p-4 rounded-xl overflow-x-auto my-6 text-sm leading-6;
+  }
+
+  .medium-article code:not(pre code) {
+    @apply bg-neutral-200 dark:bg-neutral-700 px-1.5 py-0.5 rounded text-sm;
+  }
+
+  /* TABLES */
+  .medium-article table {
+    @apply w-full border-collapse my-6;
+  }
+
+  .medium-article th {
+    @apply text-left font-semibold border-b border-neutral-300 dark:border-neutral-700 pb-2;
+  }
+
+  .medium-article td {
+    @apply border-b border-neutral-200 dark:border-neutral-700 py-2;
+  }
+
+  /* GAP BEFORE/AFTER COMPONENTS */
+  .medium-article>*:first-child {
+    @apply mt-0;
+  }
+
+  .medium-article>*:last-child {
+    @apply mb-0;
+  }
+
+  /* CODE BLOCKS — Medium Style */
+  .medium-article pre {
+    @apply bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 p-4 rounded-lg overflow-x-auto my-6 text-[14px] leading-6;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  }
+
+  .medium-article pre code {
+    @apply bg-transparent p-0 text-neutral-800 dark:text-neutral-200;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  }
+
+  /* INLINE CODE */
+  .medium-article code:not(pre code) {
+    @apply bg-neutral-200 dark:bg-neutral-700 px-1.5 py-0.5 rounded text-[14px];
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  }
+}

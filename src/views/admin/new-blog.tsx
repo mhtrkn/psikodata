@@ -1,121 +1,3 @@
-// "use client";
-
-// import { TextareaDemo } from "@/components/theme/text-area";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { useState } from "react";
-// import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
-// import { Switch } from "@/components/ui/switch";
-// import { TagInput } from "@/components/ui/tag-input";
-// import { Button } from "@/components/ui/button";
-
-// function NewBlog() {
-//   const [title, setTitle] = useState("");
-//   const [slug, setSlug] = useState("");
-//   const [excerpt, setExcerpt] = useState("");
-//   const [thumbnail, setThumbnail] = useState("");
-//   const [category, setCategory] = useState("");
-//   const [tags, setTags] = useState<string[]>([]);
-//   const [isPublished, setIsPublished] = useState(false);
-
-//   return (
-//     <div className="flex flex-col gap-10">
-//       <h2 className="text-2xl font-medium text-card-foreground">
-//         Yeni Blog
-//       </h2>
-
-//       <form className="grid grid-cols-2 gap-6 place-items-start w-full">
-
-//         {/* Title */}
-//         <div className="flex w-full flex-col gap-3 col-span-1">
-//           <Label>Başlık</Label>
-//           <Input
-//             value={title}
-//             onChange={(e) => setTitle(e.target.value)}
-//             placeholder="Örn: 2025'te Web Geliştirme"
-//           />
-//         </div>
-
-//         {/* Slug */}
-//         <div className="flex w-full flex-col gap-3 col-span-1">
-//           <Label>Slug (otomatik de olabilir)</Label>
-//           <Input
-//             value={slug}
-//             onChange={(e) => setSlug(e.target.value.toLowerCase())}
-//             placeholder="örn: 2025-web-gelistirme"
-//           />
-//         </div>
-
-//         {/* Excerpt */}
-//         <div className="flex w-full flex-col gap-3 col-span-2">
-//           <Label>Kısa Açıklama / Özet</Label>
-//           <TextareaDemo
-//             value={excerpt}
-//             onChange={(e) => setExcerpt(e.target.value)}
-//             placeholder="Blog için kısa bir açıklama yazın"
-//           />
-//         </div>
-
-//         {/* Content (Rich Text) */}
-//         <div className="flex w-full flex-col gap-3 col-span-2">
-//           <Label>İçerik</Label>
-//           <SimpleEditor />
-//         </div>
-
-//         {/* Thumbnail */}
-//         <div className="flex w-full flex-col gap-3 col-span-1">
-//           <Label>Kapak Görseli Url</Label>
-//           <Input
-//             value={thumbnail}
-//             onChange={(e) => setThumbnail(e.target.value)}
-//             placeholder="https://..."
-//           />
-//         </div>
-
-//         {/* Category */}
-//         <div className="flex w-full flex-col gap-3 col-span-1">
-//           <Label>Kategori</Label>
-//           <Input
-//             value={category}
-//             onChange={(e) => setCategory(e.target.value)}
-//             placeholder="Örn: Yazılım, Psikoloji..."
-//           />
-//         </div>
-
-//         {/* Tags */}
-//         <div className="flex w-full flex-col gap-3 col-span-2 relative">
-//           <Label className="flex items-center justify-between gap-10">Konu Başlıkları (Topics)
-//             <div className="flex w-fit items-center self-end text-xs text-muted-foreground -mb-1 mr-1 font-light leading-none">
-//               Konu başlığı eklemek için &quot;Enter&apos;a&quot; basın.
-//             </div>
-//           </Label>
-//           <TagInput value={tags} onChange={setTags} placeholder="Örn: Psikoloji, Stres Yönetimi, Sağlık & Beslenme" />
-
-//         </div>
-
-//         {/* Publish */}
-//         <div className="flex items-center gap-2 col-span-2">
-//           <Switch id="published" checked={isPublished} onCheckedChange={() => setIsPublished(!isPublished)} />
-//           <Label htmlFor="published">Hemen yayınlansın mı?</Label>
-//         </div>
-
-//         <div className="flex items-center gap-4 w-fit ml-auto col-span-2">
-//           <Button variant={"secondary"}>
-//             Vazgeç
-//           </Button>
-//           <Button>
-//             Paylaş
-//           </Button>
-//         </div>
-
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default NewBlog;
-
-
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -123,13 +5,19 @@ import React, { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { file, z } from "zod";
+import { z } from "zod";
 
 import { toast } from "sonner";
 
 import { TextareaDemo } from "@/components/theme/text-area";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Form,
   FormControl,
@@ -139,22 +27,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { TagInput } from "@/components/ui/tag-input";
+import { slugify } from "@/lib/utils";
 import { ROUTES } from "@/routes";
 import { blogService } from "@/services/blog-service";
-import { Spinner } from "@/components/ui/spinner";
-import { Label } from "@/components/ui/label";
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { slugify } from "@/lib/utils";
 
 const blogSchema = z.object({
   title: z.string().min(3, "Başlık en az 3 karakter olmalı"),
@@ -167,6 +48,7 @@ const blogSchema = z.object({
   tags: z.array(z.string()).optional(),
   is_published: z.boolean().optional(),
   author_id: z.string().uuid("Geçerli bir yazar seçin"),
+  is_featured: z.boolean().optional(),
 });
 
 type BlogFormValues = z.infer<typeof blogSchema>;
@@ -188,8 +70,9 @@ export default function NewBlogForm() {
       thumbnailFile: undefined,
       category: "",
       tags: [],
-      is_published: false,
+      is_published: true,
       author_id: "",
+      is_featured: false
     },
   });
 
@@ -222,18 +105,15 @@ export default function NewBlogForm() {
       const title = values.title;
       const slug = values.slug;
 
-      // Kullanıcı slug'a manuel yazdıysa bir daha otomatik oluşturma
       if (name === "slug" && slug) return;
 
-      // Sadece title değiştiğinde slug üret
       if (name === "title" && title) {
         const generated = slugify(title);
 
-        // Minimum 3 karakter kontrolü, boş slug üretme
         if (generated.length < 3) return;
 
         form.setValue("slug", generated, {
-          shouldValidate: false, // burada validate etme!
+          shouldValidate: false,
           shouldDirty: true,
         });
       }
@@ -261,6 +141,7 @@ export default function NewBlogForm() {
         tags: values.tags ?? [],
         is_published: !!values.is_published,
         author_id: values.author_id,
+        is_featured: !!values.is_featured,
       };
 
       const res = await fetch("/api/blog/create", {
@@ -511,13 +392,47 @@ export default function NewBlogForm() {
                           Hemen yayınlansın mı?
                         </FieldLabel>
                         <FieldDescription className="max-w-2/3 text-sm">
-                          Bu ayarı etkinleştirdiğinizde, blog kaydedildiği anda otomatik olarak yayına alınır ve ziyaretçilere görünür hale gelir.
+                          Bu ayarı etkinleştirdiğinizde, blog kaydedildiği anda yayına alınır.
                         </FieldDescription>
                       </FieldContent>
 
                       {/* Sağ Taraf (Switch) */}
                       <Switch
                         id="is_published_switch"
+                        checked={!!field.value}
+                        onCheckedChange={(v) => field.onChange(!!v)}
+                      />
+                    </Field>
+                  </FormControl>
+
+                  {/* Validasyon Hataları */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Featured */}
+            <FormField
+              control={form.control}
+              name="is_featured"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Field orientation="horizontal" className="items-center justify-between">
+
+                      {/* Sol Taraf */}
+                      <FieldContent>
+                        <FieldLabel htmlFor="is_featured_switch">
+                          Öne çıkarılsın mı?
+                        </FieldLabel>
+                        <FieldDescription className="max-w-2/3 text-sm">
+                          Bu ayar bloğu anasayfada öne çıkarır.
+                        </FieldDescription>
+                      </FieldContent>
+
+                      {/* Sağ Taraf (Switch) */}
+                      <Switch
+                        id="is_featured_switch"
                         checked={!!field.value}
                         onCheckedChange={(v) => field.onChange(!!v)}
                       />
