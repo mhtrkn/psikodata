@@ -13,7 +13,7 @@ function NotFoundPage() {
         <Providers>
           <div className="col-span-12 flex flex-1 flex-col items-center justify-center px-4 mt-20 text-center">
             <BlogIcon width={128} height={128} className="fill-current text-card-foreground" />
-            <h2 className="text-2xl font-semibold mb-2">İçerik Bulunamadı</h2>
+            <h2 className="text-2xl font-semibold mb-8">İçerik Bulunamadı</h2>
             <p className="max-w-lg text-lg text-muted-foreground mb-6">
               Üzgünüz, aradığınız sayfa mevcut değil veya taşınmış olabilir. Anasayfaya dönerek veya arama çubuğunu kullanarak aradığınız içeriklere ulaşabilirsiniz.
             </p>

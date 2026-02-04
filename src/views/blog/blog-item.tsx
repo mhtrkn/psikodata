@@ -32,7 +32,7 @@ function BlogItem({ title, description, badge, url, imageUrl }: {
         <ItemDescription className='lg:mt-4'>{description}</ItemDescription>
       </ItemContent>
       <ItemFooter>
-        <Button className='pl-0!' variant={'link'} onClick={() => handleRoute(url)}>
+        <Button className='pl-0! cursor-pointer' variant={'link'} onClick={() => handleRoute(url)}>
           Devamını Oku
           <ArrowRightIcon />
         </Button>
