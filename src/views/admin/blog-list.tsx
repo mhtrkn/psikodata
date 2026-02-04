@@ -1,8 +1,6 @@
 export default function BlogList({ data, loading }) {
   if (loading) return <p>Loading...</p>;
 
-  console.log('datdat: ', data);
-
   return (
     <div>
       {data?.length === 0 ? (

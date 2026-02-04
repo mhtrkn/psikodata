@@ -18,8 +18,6 @@ function FeaturedBlog({
     }
   }
 
-  console.log('datdat: ', data);
-
   return (
     <section className="col-span-12 flex w-full h-fit mt-10 mb-12 flex-col items-center justify-center gap-4 ">
       {hasBadge && (

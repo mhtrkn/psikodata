@@ -37,8 +37,6 @@ export async function POST(req: Request) {
       { expiresIn: "7d" }
     );
 
-    console.log('datdat: ', admin)
-
     const res = NextResponse.json(
       { success: true, message: "Login successful" },
       { status: 200 }
