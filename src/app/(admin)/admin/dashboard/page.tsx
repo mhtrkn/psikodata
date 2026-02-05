@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { blogService } from "@/services/blog-service";
+import AuthorList from "@/views/admin/author-list";
 import BlogList from "@/views/admin/blog-list";
-import NewAuthors from "@/views/admin/new-authors";
 import NewBlog from "@/views/admin/new-blog";
 import { useSearchParams } from "next/navigation";
-import { JSX } from "react";
-import { blogService } from "@/services/blog-service";
+import { JSX, useEffect, useState } from "react";
 
 export default function AdminDashboardPage() {
   const searchParams = useSearchParams();
@@ -33,7 +32,7 @@ export default function AdminDashboardPage() {
   const COMPONENT_MAP: Record<string, JSX.Element> = {
     "new-blog": <NewBlog />,
     "blog-list": <BlogList data={blogs} loading={loading} />,
-    "new-authors": <NewAuthors />,
+    "author-list": <AuthorList />,
   };
 
   const SelectedComponent =

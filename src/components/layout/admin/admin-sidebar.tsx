@@ -14,8 +14,8 @@ export const blogProcess = [
     icon: SquarePen,
   },
   {
-    id: "new-authors",
-    name: "Yazar Ekle",
+    id: "author-list",
+    name: "Yazar Listesi",
     icon: UserPlusIcon,
   },
 ];

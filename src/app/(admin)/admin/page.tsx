@@ -90,9 +90,9 @@ export default function AdminLoginPage() {
               type='submit' className='cursor-pointer leading-5 w-full py-3.5 min-h-12 h-fit text-base font-semibold'>
               {loading ? <Spinner /> : 'Giriş Yap'}
             </Button>
-            <Button onClick={handleRoute} disabled={loading} variant={"link"} className="cursor-pointer leading-5 w-full py-3.5 min-h-12 h-fit text-base font-semibold">
+            <Link href={ROUTES.HOME} className="cursor-pointer text-center text-primary leading-5 w-full py-3.5 min-h-12 h-fit text-base font-semibold">
               Anasayfaya Dön
-            </Button>
+            </Link>
           </div>
         </form>
       </div>
