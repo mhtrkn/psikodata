@@ -56,7 +56,7 @@ function AboutPage() {
       {/* Hero Section */}
       <div className='text-center mb-16 mt-10'>
         <h1 className='text-4xl md:text-5xl font-bold text-card-foreground mb-4'>
-          Psikodata Hakkında
+          Hakkımızda
         </h1>
         <p className='text-lg text-muted-foreground max-w-3xl mx-auto'>
           Psikoloji bilgisini herkes için erişilebilir kılma misyonuyla yola çıkan bir platformuz.

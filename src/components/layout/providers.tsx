@@ -15,7 +15,7 @@ function Providers({ children }: { children: React.ReactNode }) {
         disableTransitionOnChange
       >
         <Navbar />
-        <main className="container bg-card text-card-foreground mx-auto grid grid-cols-12 auto-rows-min gap-6 pb-6 xl:py-6 px-4 xl:px-0 overflow-hidden">
+        <main className="container max-w-7xl bg-card text-card-foreground mx-auto grid grid-cols-12 auto-rows-min gap-6 pb-6 xl:py-6 px-4 xl:px-0 overflow-hidden">
           {children}
         </main>
         <Footer />
