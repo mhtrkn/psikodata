@@ -1,25 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BASE_URL } from "@/lib/api";
 import { serverFetcher } from "@/lib/utils";
 import { toast } from "sonner";
-import { BlogListResponse, Blog, BlogResponse } from "@/types/blogs";
+import { BlogListResponse, Blog, BlogResponse, BlogPayload } from "@/types/blogs";
 import { AuthorType } from "@/types/authors";
 
-export interface BlogPayload {
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  thumbnail?: string;
-  category?: string;
-  tags?: string[];
-  isPublished?: boolean;
-}
-
 export const blogService = {
-  // ------------------------------------------------------
-  // BLOG OLUŞTURMA
-  // ------------------------------------------------------
   create: async (payload: BlogPayload): Promise<boolean> => {
     try {
       const res = await fetch("/api/blog/create", {
@@ -50,9 +35,6 @@ export const blogService = {
     }
   },
 
-  // ------------------------------------------------------
-  // TÜM BLOGLARI GETİRME
-  // ------------------------------------------------------
   getAll: async () => {
     try {
       const res = await fetch("/api/blog/list");
@@ -60,21 +42,12 @@ export const blogService = {
 
       if (res.ok) return data.blogs;
 
-      // toast.error("Bloglar alınamadı!", {
-      //   description: data?.error || "Sunucu kaynaklı bir hata oluştu.",
-      // });
       return [];
     } catch (err) {
-      // toast.error("Sunucu hatası!", {
-      //   description: "Blog listesi alınırken hata oluştu.",
-      // });
       return [];
     }
   },
 
-  // ------------------------------------------------------
-  // TEK BLOG GETİRME
-  // ------------------------------------------------------
   getBySlug: async (slug: string) => {
     try {
       const res = await fetch(`/api/blog/${slug}`);
@@ -94,9 +67,6 @@ export const blogService = {
     }
   },
 
-  // ------------------------------------------------------
-  // BLOG GÜNCELLEME
-  // ------------------------------------------------------
   update: async (slug: string, payload: Partial<BlogPayload>): Promise<boolean> => {
     try {
       const res = await fetch(`/api/blog/${slug}`, {
@@ -126,9 +96,6 @@ export const blogService = {
     }
   },
 
-  // ------------------------------------------------------
-  // BLOG SİLME
-  // ------------------------------------------------------
   delete: async (slug: string): Promise<boolean> => {
     try {
       const res = await fetch(`/api/blog/${slug}`, { method: "DELETE" });

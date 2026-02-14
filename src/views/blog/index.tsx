@@ -7,6 +7,7 @@ function BlogPageView() {
   return (
     <div>
       <FeaturedBlog
+        data={undefined}
         badge='Blog'
         title='Tüm Blog Yazıları'
         subtitle='Psikoloji, zihin sağlığı ve kişisel gelişim üzerine hazırlanmış, ilham verici ve bilgilendirici içeriklerin tamamını burada keşfedebilirsiniz.'

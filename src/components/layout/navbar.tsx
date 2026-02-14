@@ -40,12 +40,38 @@ function Navbar() {
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Are you absolutely sure?</SheetTitle>
+                <SheetTitle>Menu</SheetTitle>
                 <SheetDescription>
-                  This action cannot be undone. This will permanently delete your account
-                  and remove your data from our servers.
+                  Psikodata platformunda gezinin
                 </SheetDescription>
               </SheetHeader>
+              <div className="flex flex-col gap-4 mt-8">
+                <Link
+                  href={ROUTES.BLOG}
+                  className="text-lg hover:text-primary transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  Blog
+                </Link>
+                <Link
+                  href={ROUTES.ABOUT}
+                  className="text-lg hover:text-primary transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  Hakkında
+                </Link>
+                <Link
+                  href={ROUTES.CONTACT}
+                  className="text-lg hover:text-primary transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  İletişim
+                </Link>
+                <div className="flex items-center gap-4 mt-4">
+                  <ThemeToggle />
+                  <Search />
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </div>

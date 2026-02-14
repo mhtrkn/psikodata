@@ -1,9 +1,9 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Blog } from "@/types/blogs";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 function FeaturedBlog({
   badge, data, title, subtitle, hasBadge = false, hasButton = false, url = "", buttonTitle = 'Keşfet'

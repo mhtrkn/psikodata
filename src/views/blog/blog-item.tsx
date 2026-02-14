@@ -62,7 +62,7 @@ function BlogItem({ title, description, badge, url, imageUrl, isDeletable = fals
               <AlertDialogFooter>
                 <AlertDialogCancel>Vazgeç</AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={() => console.log('blog silindi')}
+                  onClick={() => {}}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
                   Sil

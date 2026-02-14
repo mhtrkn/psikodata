@@ -1,10 +1,10 @@
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { FacebookIcon, LucideLinkedin, LucideTwitter, PhoneCallIcon } from "lucide-react"
 import { ROUTES } from "@/routes"
+import { FacebookIcon, LucideLinkedin, LucideTwitter, PhoneCallIcon } from "lucide-react"
+import Link from "next/link"
 
 const companyLinks = [
   { title: "Hakkımızda", href: ROUTES.ABOUT },
@@ -14,9 +14,9 @@ const companyLinks = [
 ];
 
 const helpLinks = [
-  { title: "Sıkça Sorulan Sorular", href: "#" },
+  { title: "Sıkça Sorulan Sorular", href: ROUTES.CONTACT },
   { title: "Destek", href: ROUTES.CONTACT },
-  { title: "Kullanım Kılavuzu", href: "#" },
+  { title: "Kullanım Kılavuzu", href: ROUTES.CONTACT },
   { title: "Geri Bildirim Gönder", href: ROUTES.CONTACT },
 ];
 

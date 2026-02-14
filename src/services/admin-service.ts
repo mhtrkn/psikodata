@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { toast } from "sonner";
-
-interface LoginData {
-  username: string;
-  pin: string;
-}
+import { LoginData } from "@/types/auth";
 
 export const authService = {
   login: async ({ username, pin }: LoginData): Promise<boolean> => {

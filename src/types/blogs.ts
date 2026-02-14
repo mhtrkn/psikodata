@@ -20,3 +20,14 @@ export type BlogListResponse = {
 export type BlogResponse = {
   blog: Blog
 }
+
+export interface BlogPayload {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  thumbnail?: string;
+  category?: string;
+  tags?: string[];
+  isPublished?: boolean;
+}

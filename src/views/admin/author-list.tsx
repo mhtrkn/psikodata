@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
-import { PlusIcon, Loader2 } from "lucide-react"; // Loader ikonu eklendi
+import { PlusIcon, Loader2 } from "lucide-react";
+import { AuthorType } from "@/types/authors";
 
 import {
   Drawer,
@@ -24,7 +24,7 @@ import { AuthorCard } from "@/components/author/author-card";
 export default function AuthorList() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
-  const [authors, setAuthors] = useState([]); // Yazarları tutan state
+  const [authors, setAuthors] = useState<AuthorType[]>([]);
   const [loading, setLoading] = useState(true); // Yüklenme durumu
   const [isOpen, setIsOpen] = useState(false); // Drawer kontrolü
 
@@ -133,7 +133,7 @@ export default function AuthorList() {
         </div>
       ) : authors.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {authors.map((author: any) => (
+          {authors.map((author) => (
             <AuthorCard
               key={author.id}
               author={author}
