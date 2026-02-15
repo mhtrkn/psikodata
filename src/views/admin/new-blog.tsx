@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,7 +43,7 @@ const blogSchema = z.object({
   excerpt: z.string().min(10, "Özet en az 10 karakter olmalı"),
   content: z.string().min(20, "İçerik en az 20 karakter olmalı"),
   thumbnail: z.string(),
-  thumbnailFile: z.any().refine((file) => file instanceof File, "Lütfen, geçerli bir görsel seçin"),
+  thumbnailFile: z.any().optional(),
   category: z.string().min(2, "Kategori zorunlu"),
   tags: z.array(z.string()).optional(),
   is_published: z.boolean().optional(),
@@ -55,9 +55,13 @@ type BlogFormValues = z.infer<typeof blogSchema>;
 
 export default function NewBlogForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
 
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
   const [loadingAuthors, setLoadingAuthors] = useState(false);
+  const [loadingBlog, setLoadingBlog] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(blogSchema),
@@ -76,6 +80,7 @@ export default function NewBlogForm() {
     },
   });
 
+  // Fetch authors
   useEffect(() => {
     let mounted = true;
     setLoadingAuthors(true);
@@ -99,6 +104,45 @@ export default function NewBlogForm() {
       mounted = false;
     };
   }, []);
+
+  // Fetch blog data for editing
+  useEffect(() => {
+    if (!editId) return;
+
+    setIsEditMode(true);
+    setLoadingBlog(true);
+
+    (async () => {
+      try {
+        const res = await fetch(`/api/blog/get-by-id?id=${editId}`);
+        if (!res.ok) throw new Error("Blog yüklenemedi");
+
+        const data = await res.json();
+        const blog = data.blog;
+
+        // Populate form with blog data
+        form.reset({
+          title: blog.title,
+          slug: blog.slug,
+          excerpt: blog.excerpt,
+          content: blog.content,
+          thumbnail: blog.thumbnail || "",
+          thumbnailFile: undefined,
+          category: blog.category,
+          tags: blog.tags || [],
+          is_published: blog.is_published ?? true,
+          author_id: blog.author_id,
+          is_featured: blog.is_featured ?? false,
+        });
+      } catch (err) {
+        console.error(err);
+        toast.error("Blog yüklenirken hata oluştu");
+        router.push(ROUTES.ADMIN.BLOGS);
+      } finally {
+        setLoadingBlog(false);
+      }
+    })();
+  }, [editId, form, router]);
 
   useEffect(() => {
     const subscription = form.watch((values, { name }) => {
@@ -125,8 +169,9 @@ export default function NewBlogForm() {
 
   async function onSubmit(values: BlogFormValues) {
     try {
-      let thumbnailUrl;
+      let thumbnailUrl = values.thumbnail;
 
+      // Only upload if a new file is selected
       if (values?.thumbnailFile) {
         thumbnailUrl = await blogService.uploadThumbnail(values?.thumbnailFile) || "";
       }
@@ -144,32 +189,45 @@ export default function NewBlogForm() {
         is_featured: !!values.is_featured,
       };
 
-      const res = await fetch("/api/blog/create", {
-        method: "POST",
+      const endpoint = isEditMode ? "/api/blog/update" : "/api/blog/create";
+      const res = await fetch(endpoint, {
+        method: isEditMode ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(isEditMode ? { ...payload, id: editId } : payload),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error("Blog oluşturulamadı", { description: data?.error ?? "Sunucu hatası" });
+        toast.error(
+          isEditMode ? "Blog güncellenemedi" : "Blog oluşturulamadı",
+          { description: data?.error ?? "Sunucu hatası" }
+        );
         return;
       }
 
-      toast.success("Blog başarıyla oluşturuldu");
-      router.push(ROUTES.ADMIN.DASHBOARD);
+      toast.success(isEditMode ? "Blog başarıyla güncellendi" : "Blog başarıyla oluşturuldu");
+      router.push(ROUTES.ADMIN.BLOGS);
     } catch (err) {
-      console.error("create blog error:", err);
-      toast.error("Sunucu hatası: Blog oluşturulamadı");
+      console.error("blog operation error:", err);
+      toast.error("Sunucu hatası: İşlem tamamlanamadı");
     }
+  }
+
+  if (loadingBlog) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+        <Spinner />
+        <p className="mt-4">Blog yükleniyor...</p>
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-medium text-card-foreground">
-          Yeni Blog Oluştur
+          {isEditMode ? "Blog Düzenle" : "Yeni Blog Oluştur"}
         </h1>
         <Separator />
       </div>

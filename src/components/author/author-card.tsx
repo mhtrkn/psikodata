@@ -12,25 +12,25 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, User } from "lucide-react";
+import { Trash2, User, Edit } from "lucide-react";
 
-export function AuthorCard({ author, onDelete }) {
+export function AuthorCard({ author, onDelete, onEdit }: { author: any; onDelete: (id: string) => void; onEdit: (author: any) => void }) {
   return (
-    <Card className="group relative overflow-hidden transition-all shadow-2xs shadow-gray-100 duration-300 hover:shadow">
-      <CardContent className="px-4 py-2">
-        <div className="flex items-center justify-around">
-          <div className="flex items-center gap-4">
+    <Card className="group relative overflow-hidden transition-all shadow-sm duration-300 hover:shadow-md">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 flex-1">
             {/* Profil İkonu / Avatar Bölümü */}
-            <div className="flex h-fit w-fit aspect-square p-2 items-center justify-center rounded-full bg-primary/10 text-primary duration-300 transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary duration-300 transition-all group-hover:bg-primary group-hover:text-primary-foreground">
               <User className="h-6 w-6" />
             </div>
 
             {/* Yazar Bilgileri */}
-            <div className="space-y-1">
-              <h3 className="font-semibold">
+            <div className="space-y-1 flex-1">
+              <h3 className="font-semibold text-lg">
                 {author.name}
               </h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="font-medium">
                   {author.role}
                 </Badge>
@@ -38,8 +38,17 @@ export function AuthorCard({ author, onDelete }) {
             </div>
           </div>
 
-          {/* Hover Durumunda Görünen Silme Butonu ve Dialog */}
-          <div className="opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          {/* Hover Durumunda Görünen Butonlar */}
+          <div className="flex items-center gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(author)}
+              className="h-9 w-9 text-muted-foreground hover:bg-primary/10 hover:text-primary"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
@@ -47,7 +56,7 @@ export function AuthorCard({ author, onDelete }) {
                   size="icon"
                   className="h-9 w-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                 >
-                  <Trash2 className="h-5 w-5" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>

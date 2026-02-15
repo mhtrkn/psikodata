@@ -25,10 +25,11 @@ export default function AuthorList() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [authors, setAuthors] = useState<AuthorType[]>([]);
-  const [loading, setLoading] = useState(true); // Yüklenme durumu
-  const [isOpen, setIsOpen] = useState(false); // Drawer kontrolü
+  const [loading, setLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingAuthor, setEditingAuthor] = useState<AuthorType | null>(null);
 
-  // 1. Yazarları API'den Çekme Fonksiyonu
+  // Fetch authors
   const fetchAuthors = async () => {
     try {
       setLoading(true);
@@ -44,78 +45,127 @@ export default function AuthorList() {
     }
   };
 
-  // 2. Sayfa ilk açıldığında yazarları getir
   useEffect(() => {
     fetchAuthors();
   }, []);
 
+  // Add or update author
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !role) return toast.error("Lütfen tüm alanları doldurun.");
 
-    const res = await fetch("/api/authors/add", {
-      method: "POST",
+    const endpoint = editingAuthor ? "/api/authors/update" : "/api/authors/add";
+    const method = editingAuthor ? "PUT" : "POST";
+
+    const res = await fetch(endpoint, {
+      method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, role }),
+      body: JSON.stringify(
+        editingAuthor ? { id: editingAuthor.id, name, role } : { name, role }
+      ),
     });
 
     if (res.ok) {
-      toast.success("Yazar eklendi.");
+      toast.success(editingAuthor ? "Yazar güncellendi." : "Yazar eklendi.");
       setName("");
       setRole("");
-      setIsOpen(false); // Kayıttan sonra drawer'ı kapat
-      fetchAuthors(); // Listeyi güncelle!
+      setEditingAuthor(null);
+      setIsOpen(false);
+      fetchAuthors();
     } else {
       toast.error("Bir hata oluştu");
     }
   }
 
-  // 3. Yazar Silme Fonksiyonu (Card bileşeni için)
+  // Delete author
   const handleDelete = async (id: string) => {
     const res = await fetch(`/api/authors/delete?id=${id}`, { method: "DELETE" });
     if (res.ok) {
       toast.success("Yazar silindi.");
-      fetchAuthors(); // Listeyi güncelle
+      fetchAuthors();
     }
   };
 
+  // Edit author
+  const handleEdit = (author: AuthorType) => {
+    setEditingAuthor(author);
+    setName(author.name);
+    setRole(author.role);
+    setIsOpen(true);
+  };
+
+  // Close drawer and reset form
+  const handleCloseDrawer = () => {
+    setIsOpen(false);
+    setTimeout(() => {
+      setEditingAuthor(null);
+      setName("");
+      setRole("");
+    }, 300);
+  };
+
   return (
-    <div className="flex flex-col gap-10">
+    <div className="space-y-6">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-medium text-card-foreground">Yazar Listesi</h1>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Yazar Yönetimi</h1>
+            <p className="text-muted-foreground mt-1">
+              Yazarları ekleyin, düzenleyin veya silin
+            </p>
+          </div>
 
           <Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
               <Button className="gap-2 shadow-sm">
                 <PlusIcon className="h-4 w-4" />
-                Ekle
+                Yeni Yazar Ekle
               </Button>
             </DrawerTrigger>
 
             <DrawerContent className="fixed right-0 top-0 bottom-0 mt-0 w-full sm:w-[450px] h-full rounded-l-xl rounded-r-none">
               <div className="mx-auto w-full h-full flex flex-col">
                 <DrawerHeader className="border-b pb-6">
-                  <DrawerTitle className="text-2xl">Yazar Ekle</DrawerTitle>
-                  <DrawerDescription>Sisteme yeni bir yazar tanımlayın.</DrawerDescription>
+                  <DrawerTitle className="text-2xl">
+                    {editingAuthor ? "Yazar Düzenle" : "Yazar Ekle"}
+                  </DrawerTitle>
+                  <DrawerDescription>
+                    {editingAuthor
+                      ? "Yazar bilgilerini güncelleyin"
+                      : "Sisteme yeni bir yazar tanımlayın"}
+                  </DrawerDescription>
                 </DrawerHeader>
 
                 <form onSubmit={handleSubmit} className="flex-1 px-6 space-y-6 mt-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">Yazar Adı</Label>
-                    <Input id="name" placeholder="Rabia Betül Şahin" value={name} onChange={(e) => setName(e.target.value)} />
+                    <Input
+                      id="name"
+                      placeholder="Rabia Betül Şahin"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Ünvan</Label>
-                    <Input id="role" placeholder="Uzm. Psikolog" value={role} onChange={(e) => setRole(e.target.value)} />
+                    <Input
+                      id="role"
+                      placeholder="Uzm. Psikolog"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                    />
                   </div>
                   <button type="submit" className="hidden" />
                 </form>
 
                 <DrawerFooter className="border-t bg-muted/20 p-6">
-                  <Button onClick={handleSubmit}>Kaydet</Button>
+                  <Button onClick={handleSubmit}>
+                    {editingAuthor ? "Güncelle" : "Kaydet"}
+                  </Button>
                   <DrawerClose asChild>
-                    <Button variant="outline">İptal</Button>
+                    <Button variant="outline" onClick={handleCloseDrawer}>
+                      İptal
+                    </Button>
                   </DrawerClose>
                 </DrawerFooter>
               </div>
@@ -125,7 +175,7 @@ export default function AuthorList() {
         <Separator />
       </div>
 
-      {/* 4. Yazarların Listelendiği Grid Alanı */}
+      {/* Authors Grid */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
           <Loader2 className="h-8 w-8 animate-spin mb-2" />
@@ -138,12 +188,20 @@ export default function AuthorList() {
               key={author.id}
               author={author}
               onDelete={handleDelete}
+              onEdit={handleEdit}
             />
           ))}
         </div>
       ) : (
         <div className="text-center py-20 border-2 border-dashed rounded-xl">
-          <p className="text-muted-foreground">Henüz yazar eklenmemiş.</p>
+          <p className="text-muted-foreground font-medium mb-2">Henüz yazar eklenmemiş</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            İlk yazarınızı eklemek için başlayın
+          </p>
+          <Button onClick={() => setIsOpen(true)} className="gap-2">
+            <PlusIcon className="h-4 w-4" />
+            Yeni Yazar Ekle
+          </Button>
         </div>
       )}
     </div>

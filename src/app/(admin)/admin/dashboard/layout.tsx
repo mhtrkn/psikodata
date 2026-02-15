@@ -8,9 +8,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <React.Fragment>
       <SidebarProvider>
         <AdminSidebar />
-        <main className="relative w-full">
+        <main className="flex flex-1 flex-col min-h-dvh relative w-full">
           <AdminNavbar />
-          <div className="flex-1 p-8 bg-neutral-100 dark:bg-neutral-950/40">
+          <div className="flex-1 p-8 bg-accent dark:bg-accent">
             {children}
           </div>
         </main>
