@@ -81,24 +81,24 @@ export default function HeroSettingsPage() {
       <Separator />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="h-full flex-1 grow">
           <CardHeader>
             <CardTitle>Öne Çıkan Blog Seçimi</CardTitle>
             <CardDescription>
               Hero section'da gösterilecek blogu buradan seçebilirsiniz
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 flex flex-col grow">
             {loading ? (
               <div className="flex justify-center py-8">
                 <Spinner />
               </div>
             ) : (
               <>
-                <div className="space-y-2">
+                <div className="space-y-2 grow">
                   <label className="text-sm font-medium">Blog Seçin</label>
                   <Select value={selectedBlogId} onValueChange={setSelectedBlogId}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Bir blog seçin" />
                     </SelectTrigger>
                     <SelectContent>

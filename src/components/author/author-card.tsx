@@ -16,9 +16,9 @@ import { Trash2, User, Edit } from "lucide-react";
 
 export function AuthorCard({ author, onDelete, onEdit }: { author: any; onDelete: (id: string) => void; onEdit: (author: any) => void }) {
   return (
-    <Card className="group relative overflow-hidden transition-all shadow-sm duration-300 hover:shadow-md">
+    <Card className="group relative py-0 overflow-hidden transition-all shadow-sm duration-300 hover:shadow-md">
       <CardContent className="p-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-4 flex-1">
             {/* Profil İkonu / Avatar Bölümü */}
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary duration-300 transition-all group-hover:bg-primary group-hover:text-primary-foreground">
@@ -27,7 +27,7 @@ export function AuthorCard({ author, onDelete, onEdit }: { author: any; onDelete
 
             {/* Yazar Bilgileri */}
             <div className="space-y-1 flex-1">
-              <h3 className="font-semibold text-lg">
+              <h3 className="font-semibold text-lg whitespace-nowrap">
                 {author.name}
               </h3>
               <div className="flex items-center gap-2">

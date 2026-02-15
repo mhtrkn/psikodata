@@ -9,7 +9,7 @@ function AdminProviders({ children }: { children: React.ReactNode }) {
         <main className="relative w-full min-h-screen bg-card text-card-foreground">
           {children}
         </main>
-        <Toaster richColors position="top-bottom" />
+        <Toaster richColors position="bottom-right" />
       </ThemeProvider>
     </React.Fragment>
   )
