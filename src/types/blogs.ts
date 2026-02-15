@@ -4,7 +4,7 @@ export type Blog = {
   slug: string;
   excerpt: string;
   content: string;
-  thumbnail: string | null;
+  thumbnail: string;
   category: string;
   tags: string[];
   is_published: boolean | null;
