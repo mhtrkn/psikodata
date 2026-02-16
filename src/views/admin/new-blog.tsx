@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { TextareaDemo } from "@/components/theme/text-area";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldContent,
@@ -36,6 +37,8 @@ import { TagInput } from "@/components/ui/tag-input";
 import { slugify } from "@/lib/utils";
 import { ROUTES } from "@/routes";
 import { blogService } from "@/services/blog-service";
+import { ImageUp, Link2 } from "lucide-react";
+import Image from "next/image";
 
 const blogSchema = z.object({
   title: z.string().min(3, "Başlık en az 3 karakter olmalı"),
@@ -56,7 +59,7 @@ type BlogFormValues = z.infer<typeof blogSchema>;
 export default function NewBlogForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editId = searchParams.get("edit");
+  const editSlug = searchParams.get("edit");
 
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
   const [loadingAuthors, setLoadingAuthors] = useState(false);
@@ -107,14 +110,14 @@ export default function NewBlogForm() {
 
   // Fetch blog data for editing
   useEffect(() => {
-    if (!editId) return;
+    if (!editSlug) return;
 
     setIsEditMode(true);
     setLoadingBlog(true);
 
     (async () => {
       try {
-        const res = await fetch(`/api/blog/get-by-id?id=${editId}`);
+        const res = await fetch(`/api/blog/${editSlug}`);
         if (!res.ok) throw new Error("Blog yüklenemedi");
 
         const data = await res.json();
@@ -142,9 +145,11 @@ export default function NewBlogForm() {
         setLoadingBlog(false);
       }
     })();
-  }, [editId, form, router]);
+  }, [editSlug, form, router]);
 
   useEffect(() => {
+    if (isEditMode) return;
+
     const subscription = form.watch((values, { name }) => {
       const title = values.title;
       const slug = values.slug;
@@ -164,7 +169,7 @@ export default function NewBlogForm() {
     });
 
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, isEditMode]);
 
 
   async function onSubmit(values: BlogFormValues) {
@@ -189,11 +194,11 @@ export default function NewBlogForm() {
         is_featured: !!values.is_featured,
       };
 
-      const endpoint = isEditMode ? "/api/blog/update" : "/api/blog/create";
+      const endpoint = isEditMode ? `/api/blog/${editSlug}` : "/api/blog/create";
       const res = await fetch(endpoint, {
         method: isEditMode ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(isEditMode ? { ...payload, id: editId } : payload),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -214,6 +219,9 @@ export default function NewBlogForm() {
     }
   }
 
+  const thumbnailFile = form.watch("thumbnailFile");
+  const existingThumbnail = form.watch("thumbnail");
+
   if (loadingBlog) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
@@ -224,7 +232,8 @@ export default function NewBlogForm() {
   }
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
+      {/* Header */}
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-medium text-card-foreground">
           {isEditMode ? "Blog Düzenle" : "Yeni Blog Oluştur"}
@@ -233,284 +242,317 @@ export default function NewBlogForm() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-6 place-items-start w-full">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
 
-          {/* Title */}
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem className="col-span-1 w-full">
-                <FormLabel>Başlık</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Örn: 2025'te Web Geliştirme" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Section 1: Temel Bilgiler */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Temel Bilgiler</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-6">
+              {/* Title */}
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 w-full">
+                    <FormLabel>Başlık</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Örn: 2025'te Web Geliştirme" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {/* Slug */}
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem className="col-span-1 w-full">
-                <FormLabel>Slug</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="örn: 2025-web-gelistirme" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Author select */}
-          <FormField
-            control={form.control}
-            name="author_id"
-            render={({ field }) => (
-              <FormItem className="col-span-1 w-full">
-                <FormLabel>Yazar</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value}
-                    onValueChange={(val) => field.onChange(val)}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder={loadingAuthors ? "Yükleniyor..." : "Yazar seçin"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {authors.map((a) => (
-                        <SelectItem key={a.id} value={a.id}>
-                          {a.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Category */}
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem className="col-span-1 w-full">
-                <FormLabel>Kategori</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="örn: Yazılım, Psikoloji" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Excerpt */}
-          <FormField
-            control={form.control}
-            name="excerpt"
-            render={({ field }) => (
-              <FormItem className="col-span-2 w-full">
-                <FormLabel>Kısa Açıklama / Özet</FormLabel>
-                <FormControl>
-                  <TextareaDemo
-                    value={field.value}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => field.onChange(e.target.value)}
-                    placeholder="Blog için kısa bir açıklama veya özet yazın"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Content (rich editor via Controller) */}
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem className="col-span-2 w-full">
-                <FormLabel>İçerik</FormLabel>
-                <SimpleEditor
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Thumbnail */}
-          <FormField
-            control={form.control}
-            name="thumbnailFile"
-            render={({ field }) => (
-              <FormItem className="col-span-1 w-full">
-                <FormLabel>Kapak Görseli</FormLabel>
-                <FormControl>
-                  <div className="w-full">
-                    <Input
-                      id="thumbnailFileInput"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] ?? null
-                        field.onChange(file)
-                      }}
-                    />
-
-                    <Label
-                      htmlFor="thumbnailFileInput"
-                      className="flex flex-col items-center justify-center border border-dashed rounded-md min-h-40 cursor-pointer bg-accent/25 hover:bg-accent/40 transition p-4"
-                    >
-                      {
-                        form?.getValues().thumbnailFile ? (
-                          <div className="flex flex-col items-center space-y-1 py-4">
-                            <div className="text-sm font-medium">
-                              Seçilen Dosya:
-                            </div>
-
-                            <div className="text-xs text-muted-foreground max-w-60 truncate">
-                              {form.getValues().thumbnailFile?.name}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center space-y-2 py-6">
-                            <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center border border-dashed">
-                              <span className="text-2xl leading-none">+</span>
-                            </div>
-
-                            <span className="font-medium text-sm">
-                              Fotoğraf yüklemek için tıklayın
-                            </span>
-
-                            <span className="text-xs text-muted-foreground">
-
-                            </span>
-                            <span className="text-xs text-center text-muted-foreground">
-                              Desteklenen formatlar: JPG, JPEG PNG, WEBP
-                              <br></br>
-                              Maksimum dosya boyutu: 5 MB
-                            </span>
-                          </div>
-                        )
-                      }
-                    </Label>
-                  </div>
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="col-span-1 w-full flex flex-col justify-between h-full">
-            {/* Tags (TagInput via Controller) */}
-            <FormField
-              control={form.control}
-              name="tags"
-              render={() => (
-                <FormItem className="w-full">
-                  <FormLabel>Konu Başlıkları (Tags)</FormLabel>
-                  <FormControl>
-                    <Controller
-                      control={form.control}
-                      name="tags"
-                      render={({ field: controllerField }) => (
-                        <TagInput
-                          value={controllerField.value || []}
-                          onChange={(val: string[]) => controllerField.onChange(val)}
-                          placeholder="Etiketleri girin, Enter ile ekleyin"
-                        />
+              {/* Slug */}
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 w-full">
+                    <FormLabel className="flex items-center gap-1.5">
+                      Slug
+                      {!isEditMode && (
+                        <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
+                          <Link2 className="w-3 h-3" />
+                          Başlıktan otomatik üretilir
+                        </span>
                       )}
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="örn: 2025-web-gelistirme" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Author select */}
+              <FormField
+                control={form.control}
+                name="author_id"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 w-full">
+                    <FormLabel>Yazar</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) => field.onChange(val)}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={loadingAuthors ? "Yükleniyor..." : "Yazar seçin"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {authors.map((a) => (
+                            <SelectItem key={a.id} value={a.id}>
+                              {a.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Category */}
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 w-full">
+                    <FormLabel>Kategori</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="örn: Yazılım, Psikoloji" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Excerpt */}
+              <FormField
+                control={form.control}
+                name="excerpt"
+                render={({ field }) => (
+                  <FormItem className="col-span-2 w-full">
+                    <FormLabel>Kısa Açıklama / Özet</FormLabel>
+                    <FormControl>
+                      <TextareaDemo
+                        value={field.value}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => field.onChange(e.target.value)}
+                        placeholder="Blog için kısa bir açıklama veya özet yazın"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Section 2: İçerik */}
+          <Card>
+            <CardHeader>
+              <CardTitle>İçerik</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <SimpleEditor
+                      value={field.value}
+                      onChange={field.onChange}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
-            {/* Publish switch */}
-            <FormField
-              control={form.control}
-              name="is_published"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Field orientation="horizontal" className="items-center justify-between">
+          {/* Section 3: Medya & Etiketler */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Medya & Etiketler</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-6">
+              {/* Thumbnail */}
+              <FormField
+                control={form.control}
+                name="thumbnailFile"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 w-full">
+                    <FormLabel>Kapak Görseli</FormLabel>
+                    <FormControl>
+                      <div className="w-full">
+                        <Input
+                          id="thumbnailFileInput"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] ?? null
+                            field.onChange(file)
+                          }}
+                        />
 
-                      {/* Sol Taraf */}
-                      <FieldContent>
-                        <FieldLabel htmlFor="is_published_switch">
-                          Hemen yayınlansın mı?
-                        </FieldLabel>
-                        <FieldDescription className="max-w-2/3 text-sm">
-                          Bu ayarı etkinleştirdiğinizde, blog kaydedildiği anda yayına alınır.
-                        </FieldDescription>
-                      </FieldContent>
+                        <Label
+                          htmlFor="thumbnailFileInput"
+                          className="flex flex-col items-center justify-center border border-dashed rounded-md min-h-48 cursor-pointer bg-accent/25 hover:bg-accent/40 transition p-4 relative overflow-hidden"
+                        >
+                          {thumbnailFile ? (
+                            <div className="flex flex-col items-center space-y-2 py-4">
+                              <ImageUp className="w-8 h-8 text-muted-foreground" />
+                              <div className="text-sm font-medium">
+                                Seçilen Dosya:
+                              </div>
+                              <div className="text-xs text-muted-foreground max-w-60 truncate">
+                                {thumbnailFile?.name}
+                              </div>
+                              <span className="text-xs text-primary underline">
+                                Değiştirmek için tıklayın
+                              </span>
+                            </div>
+                          ) : existingThumbnail ? (
+                            <div className="relative w-full h-48">
+                              <Image
+                                src={existingThumbnail}
+                                alt="Mevcut kapak görseli"
+                                fill
+                                className="object-cover rounded-md"
+                              />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-md">
+                                <span className="text-white text-sm font-medium">
+                                  Değiştirmek için tıklayın
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center space-y-2 py-6">
+                              <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center border border-dashed">
+                                <ImageUp className="w-5 h-5 text-muted-foreground" />
+                              </div>
+                              <span className="font-medium text-sm">
+                                Fotoğraf yüklemek için tıklayın
+                              </span>
+                              <span className="text-xs text-center text-muted-foreground">
+                                JPG, JPEG, PNG, WEBP - Maks. 5 MB
+                              </span>
+                            </div>
+                          )}
+                        </Label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                      {/* Sağ Taraf (Switch) */}
-                      <Switch
-                        id="is_published_switch"
-                        checked={!!field.value}
-                        onCheckedChange={(v) => field.onChange(!!v)}
+              {/* Tags */}
+              <FormField
+                control={form.control}
+                name="tags"
+                render={() => (
+                  <FormItem className="col-span-1 w-full">
+                    <FormLabel>Konu Başlıkları (Tags)</FormLabel>
+                    <FormControl>
+                      <Controller
+                        control={form.control}
+                        name="tags"
+                        render={({ field: controllerField }) => (
+                          <TagInput
+                            value={controllerField.value || []}
+                            onChange={(val: string[]) => controllerField.onChange(val)}
+                            placeholder="Etiketleri girin, Enter ile ekleyin"
+                          />
+                        )}
                       />
-                    </Field>
-                  </FormControl>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
-                  {/* Validasyon Hataları */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          {/* Section 4: Yayın Ayarları */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Yayın Ayarları</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              {/* Publish switch */}
+              <FormField
+                control={form.control}
+                name="is_published"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Field orientation="horizontal" className="items-center justify-between">
+                        <FieldContent>
+                          <FieldLabel htmlFor="is_published_switch">
+                            Hemen yayınlansın mı?
+                          </FieldLabel>
+                          <FieldDescription className="max-w-2/3 text-sm">
+                            Bu ayarı etkinleştirdiğinizde, blog kaydedildiği anda yayına alınır.
+                          </FieldDescription>
+                        </FieldContent>
+                        <Switch
+                          id="is_published_switch"
+                          checked={!!field.value}
+                          onCheckedChange={(v) => field.onChange(!!v)}
+                        />
+                      </Field>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Featured */}
-            <FormField
-              control={form.control}
-              name="is_featured"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Field orientation="horizontal" className="items-center justify-between">
+              <Separator />
 
-                      {/* Sol Taraf */}
-                      <FieldContent>
-                        <FieldLabel htmlFor="is_featured_switch">
-                          Öne çıkarılsın mı?
-                        </FieldLabel>
-                        <FieldDescription className="max-w-2/3 text-sm">
-                          Bu ayar bloğu anasayfada öne çıkarır.
-                        </FieldDescription>
-                      </FieldContent>
-
-                      {/* Sağ Taraf (Switch) */}
-                      <Switch
-                        id="is_featured_switch"
-                        checked={!!field.value}
-                        onCheckedChange={(v) => field.onChange(!!v)}
-                      />
-                    </Field>
-                  </FormControl>
-
-                  {/* Validasyon Hataları */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+              {/* Featured */}
+              <FormField
+                control={form.control}
+                name="is_featured"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Field orientation="horizontal" className="items-center justify-between">
+                        <FieldContent>
+                          <FieldLabel htmlFor="is_featured_switch">
+                            Öne çıkarılsın mı?
+                          </FieldLabel>
+                          <FieldDescription className="max-w-2/3 text-sm">
+                            Bu ayar bloğu anasayfada öne çıkarır.
+                          </FieldDescription>
+                        </FieldContent>
+                        <Switch
+                          id="is_featured_switch"
+                          checked={!!field.value}
+                          onCheckedChange={(v) => field.onChange(!!v)}
+                        />
+                      </Field>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
           {/* Actions */}
-          <div className="col-span-2 w-full self-end items-center flex justify-end gap-3 mt-10">
-            <Button type="button" variant="secondary" className="min-w-20" onClick={() => router.push(ROUTES.ADMIN.DASHBOARD)}>
+          <div className="flex justify-end gap-3 pb-10">
+            <Button type="button" variant="secondary" className="min-w-24" onClick={() => router.push(ROUTES.ADMIN.DASHBOARD)}>
               Vazgeç
             </Button>
-            <Button type="submit" className="min-w-20" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting ? <Spinner /> : "Paylaş"}
+            <Button type="submit" className="min-w-24" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? <Spinner /> : isEditMode ? "Güncelle" : "Paylaş"}
             </Button>
           </div>
         </form>

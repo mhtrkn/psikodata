@@ -59,28 +59,6 @@ const sidebarItems = [
     icon: Users,
     href: ROUTES.ADMIN.AUTHORS,
   },
-  {
-    id: "pages",
-    name: "Sayfa Yönetimi",
-    icon: LayoutDashboard,
-    items: [
-      {
-        id: "hero",
-        name: "Hero Section",
-        href: ROUTES.ADMIN.PAGES.HERO,
-      },
-      {
-        id: "about",
-        name: "Hakkımızda",
-        href: ROUTES.ADMIN.PAGES.ABOUT,
-      },
-      {
-        id: "contact",
-        name: "İletişim",
-        href: ROUTES.ADMIN.PAGES.CONTACT,
-      },
-    ],
-  },
 ];
 
 export function AdminSidebar() {

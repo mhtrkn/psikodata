@@ -26,14 +26,14 @@ export default function BlogList({ data, loading }: { data: any; loading: boolea
   const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const handleEdit = (blogId: string) => {
-    router.push(`${ROUTES.ADMIN.NEW_BLOG}?edit=${blogId}`);
+  const handleEdit = (slug: string) => {
+    router.push(`${ROUTES.ADMIN.NEW_BLOG}?edit=${slug}`);
   };
 
-  const handleDelete = async (blogId: string) => {
-    setDeleting(blogId);
+  const handleDelete = async (slug: string) => {
+    setDeleting(slug);
     try {
-      const res = await fetch(`/api/blog/delete?id=${blogId}`, {
+      const res = await fetch(`/api/blog/${slug}`, {
         method: "DELETE",
       });
 
@@ -186,7 +186,7 @@ export default function BlogList({ data, loading }: { data: any; loading: boolea
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleEdit(blog.id)}
+                        onClick={() => handleEdit(blog.slug)}
                         className="gap-2"
                       >
                         <Edit className="w-4 h-4" />
@@ -199,7 +199,7 @@ export default function BlogList({ data, loading }: { data: any; loading: boolea
                             size="sm"
                             variant="outline"
                             className="gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20"
-                            disabled={deleting === blog.id}
+                            disabled={deleting === blog.slug}
                           >
                             {deleting === blog.id ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
@@ -221,7 +221,7 @@ export default function BlogList({ data, loading }: { data: any; loading: boolea
                           <AlertDialogFooter>
                             <AlertDialogCancel className="cursor-pointer">Vazgeç</AlertDialogCancel>
                             <AlertDialogAction
-                              onClick={() => handleDelete(blog.id)}
+                              onClick={() => handleDelete(blog.slug)}
                               className="bg-destructive cursor-pointer text-destructive-foreground hover:bg-destructive/90"
                             >
                               Sil

@@ -4,9 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Blog } from "@/types/blogs";
-import { useRouter } from "next/navigation";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRightIcon, Clock } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function FeaturedBlog({
   badge,
@@ -40,7 +40,7 @@ function FeaturedBlog({
   if (!data) return null;
 
   return (
-    <section className="col-span-12 w-full">
+    <section className="col-span-12 mb-20 w-full">
       {
         firstSectionVisible && (
           <div className="flex flex-col items-center justify-center gap-3 mb-8">
@@ -104,13 +104,9 @@ function FeaturedBlog({
             </div>
 
             {hasButton && (
-              <Button
-                onClick={handleRoute}
-                size="lg"
-                className="group/btn w-fit px-6"
-              >
-                {buttonTitle}
-                <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              <Button className='pl-0! justify-start cursor-pointer' variant={'link'} onClick={handleRoute}>
+                Devamını Oku
+                <ArrowRightIcon />
               </Button>
             )}
           </div>

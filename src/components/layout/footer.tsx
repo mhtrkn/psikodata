@@ -33,9 +33,9 @@ function Footer() {
       <div className="container grid grid-cols-1 xl:grid-cols-12 gap-12 mx-auto py-6 pb-10 border-b border-b-neutral-100 dark:border-b-neutral-800 px-4 xl:px-0">
         <div className="col-span-4">
           <Link href={ROUTES.HOME} className="block mb-2 text-4xl font-bold text-primary">psikodata.</Link>
-          <span className="text-sm font-light">
+          <p className="max-w-85 text-sm font-light">
             Psikoloji dünyasından güncel içerikleri, araştırmaları ve pratik önerileri paylaşan bir blog platformudur.
-          </span>
+          </p>
         </div>
         <div className="col-span-2 text-left">
           <ul className="text-lg text-neutral-800 dark:text-neutral-300 space-y-2">

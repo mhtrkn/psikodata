@@ -127,13 +127,7 @@ export default function AdminDashboardPage() {
       description: "Yazar listesini yönet",
       href: ROUTES.ADMIN.AUTHORS,
       icon: Users,
-    },
-    {
-      title: "Sayfa Ayarları",
-      description: "Hero section ve diğer sayfaları düzenle",
-      href: ROUTES.ADMIN.PAGES.HERO,
-      icon: LayoutDashboard,
-    },
+    }
   ];
 
   return (
