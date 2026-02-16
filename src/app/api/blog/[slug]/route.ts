@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 
+type Params = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
 export async function GET(
-  req: Request,
-  { params }: { params: { slug: string } }
+  req: NextRequest,
+  { params }: Params
 ) {
   const { slug } = await params;
 
@@ -34,8 +40,8 @@ export async function GET(
 }
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { slug: string } }
+  req: NextRequest,
+  { params }: Params
 ) {
   const { slug } = await params;
 
@@ -68,8 +74,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { slug: string } }
+  req: NextRequest,
+  { params }: Params
 ) {
   const { slug } = await params;
 

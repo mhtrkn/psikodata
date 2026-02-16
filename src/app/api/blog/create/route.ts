@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 
@@ -16,9 +16,8 @@ export async function POST(req: Request) {
       tags,
       is_published,
       author_id,
-      is_featured
+      is_featured,
     } = body;
-
 
     if (!title || !slug || !content) {
       return NextResponse.json(
@@ -29,20 +28,24 @@ export async function POST(req: Request) {
 
     const supabase = createServerClient();
 
-    const { data, error } = await supabase.from("blogs").insert([
-      {
-        title,
-        slug,
-        excerpt,
-        content,
-        thumbnail,
-        category,
-        tags,
-        is_published,
-        author_id,
-        is_featured
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("blogs")
+      .insert([
+        {
+          title,
+          slug,
+          excerpt,
+          content,
+          thumbnail,
+          category,
+          tags,
+          is_published,
+          author_id,
+          is_featured,
+        },
+      ])
+      .select()
+      .single(); // 👈 Ekledik
 
     if (error) {
       return NextResponse.json(
@@ -51,8 +54,21 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ success: true, blog: data?.[0] });
+    if (!data) {
+      return NextResponse.json(
+        { error: "Blog oluşturulamadı." },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      blog: data,
+    });
+
   } catch (err) {
+    console.error("Create blog error:", err);
+
     return NextResponse.json(
       { error: "Server error." },
       { status: 500 }

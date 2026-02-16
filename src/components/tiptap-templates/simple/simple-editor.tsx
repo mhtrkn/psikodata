@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { EditorContent, EditorContext, JSONContent, useEditor } from "@tiptap/react"
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit"
@@ -174,7 +174,12 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor({ value, onChange }) {
+type SimpleEditorProps = {
+  value: string | JSONContent;
+  onChange: (value: string) => void;
+};
+
+export function SimpleEditor({ value, onChange }: SimpleEditorProps) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
